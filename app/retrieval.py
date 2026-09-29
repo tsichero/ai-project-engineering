@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import re
 
 @dataclass(frozen=True)
 class Document:
@@ -11,12 +12,14 @@ DOCUMENTS = [
     Document("api", "FastAPI provides a typed HTTP interface for serving Python application services."),
 ]
 
+def _terms(text: str) -> set[str]:
+    return {term for term in re.findall(r"[a-zA-ZÀ-ÿ0-9]+", text.lower()) if len(term) > 2}
+
 def retrieve(question: str, top_k: int = 2) -> list[Document]:
-    terms = {term.lower().strip(".,?!") for term in question.split() if len(term) > 2}
+    terms = _terms(question)
     scored = []
     for document in DOCUMENTS:
-        words = {term.lower().strip(".,?!") for term in document.text.split()}
-        score = len(terms & words)
+        score = len(terms & _terms(document.text))
         scored.append((score, document))
     scored.sort(key=lambda item: (-item[0], item[1].id))
     return [doc for score, doc in scored[:top_k] if score > 0]
