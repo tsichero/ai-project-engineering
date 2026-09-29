@@ -1,0 +1,5 @@
+[
+  {"id":"rag_definition","question":"What is RAG?","expected_sources":["rag"],"must_be_grounded":true},
+  {"id":"evaluation_definition","question":"What should AI evaluation use?","expected_sources":["evaluation"],"must_be_grounded":true},
+  {"id":"unknown","question":"What is quantum gardening?","expected_sources":[],"must_be_grounded":false}
+]
