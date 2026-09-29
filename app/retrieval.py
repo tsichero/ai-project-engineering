@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-import re
+from .embeddings import EmbeddingService
+from .vector_store import InMemoryVectorStore, VectorRecord
 
 @dataclass(frozen=True)
 class Document:
@@ -12,14 +13,17 @@ DOCUMENTS = [
     Document("api", "FastAPI provides a typed HTTP interface for serving Python application services."),
 ]
 
-def _terms(text: str) -> set[str]:
-    return {term for term in re.findall(r"[a-zA-ZÀ-ÿ0-9]+", text.lower()) if len(term) > 2}
+_embedding_service = EmbeddingService()
+_store = InMemoryVectorStore([
+    VectorRecord(document.id, document.text, _embedding_service.embed([document.text])[0])
+    for document in DOCUMENTS
+])
 
 def retrieve(question: str, top_k: int = 2) -> list[Document]:
-    terms = _terms(question)
-    scored = []
-    for document in DOCUMENTS:
-        score = len(terms & _terms(document.text))
-        scored.append((score, document))
-    scored.sort(key=lambda item: (-item[0], item[1].id))
-    return [doc for score, doc in scored[:top_k] if score > 0]
+    query_vector = _embedding_service.embed([question])[0]
+    ranked = _store.search(query_vector, top_k=top_k)
+    return [Document(record.id, record.text) for score, record in ranked if score > 0.0]
+
+def retrieve_scored(question: str, top_k: int = 2) -> list[tuple[float, Document]]:
+    query_vector = _embedding_service.embed([question])[0]
+    return [(score, Document(record.id, record.text)) for score, record in _store.search(query_vector, top_k=top_k)]
