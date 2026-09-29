@@ -1,0 +1,8 @@
+{
+  "cases_with_expected_sources": 3,
+  "hit_rate_at_k": 1.0,
+  "mrr_at_k": 1.0,
+  "mean_recall_at_k": 1.0,
+  "k": 2,
+  "embedding_mode": "local"
+}
