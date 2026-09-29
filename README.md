@@ -5,7 +5,8 @@
 ## Implementado
 
 - API FastAPI;
-- retrieval determinístico sobre base de documentos versionada;
+- retrieval por vetores sobre base de documentos versionada;
+- embeddings locais determinísticos para testes, com modo opcional Sentence Transformers;
 - contexto recuperado separado da geração;
 - integração com LLM por API compatível com Chat Completions;
 - modo **demo** determinístico para testes sem credenciais;
@@ -78,7 +79,8 @@ A avaliação atual é uma base inicial para evolução para métricas de qualid
 
 ## Limitações atuais
 
-- retrieval atual baseado em sobreposição de termos, não embeddings;
+- modo local de embeddings usa vetores hash determinísticos para manter os testes reproduzíveis;
+- modo `sentence-transformers` é opcional e requer instalação/modelo;
 - base de conhecimento pequena e versionada no código;
 - nenhuma chamada real a LLM é executada durante a suíte padrão;
 - ainda não há vector database;
@@ -86,7 +88,7 @@ A avaliação atual é uma base inicial para evolução para métricas de qualid
 
 ## Próxima evolução
 
-- [ ] embeddings e vector store;
+- [x] embeddings e vector store;
 - [ ] reranking;
 - [ ] dataset maior de avaliação;
 - [ ] métricas de relevância e faithfulness;
